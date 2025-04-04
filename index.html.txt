@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & Semiconductor Stock Portfolio Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-indigo-600 font-bold text-xl">AI Stock Portfolio</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="#historical" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Historical Performance
+                        </a>
+                        <a href="#insights" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Learning Insights
+                        </a>
+                        <a href="#settings" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Settings
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button id="updateBtn" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Update Recommendations
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">AI & Semiconductor Stock Portfolio Dashboard</h1>
+            <p class="mt-2 text-gray-600">Track and analyze AI and semiconductor stock recommendations with historical performance tracking and a self-improving learning algorithm.</p>
+        </div>
+        
+        <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div class="bg-white overflow-hidden shadow rounded-lg lg:col-span-2">
+                <div class="px-4 py-5 sm:p-6">
+                    <h2 class="text-lg font-medium text-gray-900">Portfolio Performance</h2>
+                    <div class="mt-4 h-64">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <h2 class="text-lg font-medium text-gray-900">Allocation Summary</h2>
+                    <div id="allocation-summary" class="mt-4 space-y-4">
+                        <!-- Allocation summary will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Investment Strategy</h3>
+                        <p class="text-sm text-gray-600">
+                            This portfolio focuses on companies with strong AI and semiconductor capabilities, 
+                            balanced between established leaders and emerging innovators. The allocation strategy 
+                            provides exposure across the entire semiconductor value chain while maintaining focus 
+                            on AI and data center technologies.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h2 class="text-lg font-medium text-gray-900">Stock Recommendations</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Current Price</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">30-Day Forecast</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Target Price</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Level</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rationale</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="stockTableBody">
+                        <!-- Stock data will be inserted here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="historical" class="mt-12 pt-6">
+            <h2 class="text-2xl font-bold text-gray-900">Historical Performance</h2>
+            <p class="mt-2 text-gray-600">Track how our AI-driven recommendations have performed over time.</p>
+            
+            <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3" id="performance-summary">
+                <!-- Performance summary will be populated by JavaScript -->
+            </div>
+            
+            <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg font-medium text-gray-900">Detailed Performance History</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ticker</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Expected</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actual</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Accuracy</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Profit/Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="performanceTableBody">
+                            <!-- Performance data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div id="insights" class="mt-12 pt-6">
+            <h2 class="text-2xl font-bold text-gray-900">Learning Insights</h2>
+            <p class="mt-2 text-gray-600">Discover how our AI algorithm learns and improves over time by analyzing past performance.</p>
+            
+            <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Market Trends</h3>
+                    <div class="space-y-4" id="marketTrendsInsights">
+                        <!-- Market trends insights will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Prediction Improvements</h3>
+                    <div class="space-y-4" id="predictionInsights">
+                        <!-- Prediction insights will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">How Our Learning Algorithm Works</h3>
+                <div class="prose max-w-none">
+                    <p>
+                        Our AI-driven portfolio recommendation system continuously learns from past performance to improve future predictions.
+                        The system analyzes patterns in market data, company fundamentals, and sector trends to identify factors that lead to
+                        successful investments.
+                    </p>
+                    <p class="mt-4">
+                        Key learning mechanisms include:
+                    </p>
+                    <ul class="mt-2 list-disc pl-5 space-y-2">
+                        <li>Pattern recognition across successful investments</li>
+                        <li>Correlation analysis between company metrics and stock performance</li>
+                        <li>Sector-specific trend identification</li>
+                        <li>Risk factor weighting based on historical volatility</li>
+                        <li>Continuous backtesting against historical data</li>
+                    </ul>
+                    <p class="mt-4">
+                        Each month, the algorithm evaluates its previous recommendations against actual market performance, adjusts its
+                        weighting factors, and incorporates new insights to improve future recommendations.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="settings" class="mt-12 pt-6">
+            <h2 class="text-2xl font-bold text-gray-900">Settings</h2>
+            <p class="mt-2 text-gray-600">Configure your portfolio dashboard preferences.</p>
+            
+            <div class="mt-6 bg-white rounded-lg shadow p-6">
+                <form id="settingsForm">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Portfolio Preferences</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="risk_tolerance" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Risk Tolerance
+                                    </label>
+                                    <select
+                                        id="risk_tolerance"
+                                        name="risk_tolerance"
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                    >
+                                        <option value="conservative">Conservative</option>
+                                        <option value="moderate">Moderate</option>
+                                        <option value="aggressive" selected>Aggressive</option>
+                                        <option value="very_aggressive">Very Aggressive</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="benchmark_index" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Benchmark Index
+                                    </label>
+                                    <select
+                                        id="benchmark_index"
+                                        name="benchmark_index"
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                    >
+                                        <option value="S&P500">S&P 500</option>
+                                        <option value="NASDAQ" selected>NASDAQ</option>
+                                        <option value="DJIA">Dow Jones Industrial Average</option>
+                                        <option value="SOX">Philadelphia Semiconductor Index</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="focus_sectors" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Focus Sectors
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="focus_sectors"
+                                        id="focus_sectors"
+                                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                        value="AI,Semiconductors,Data Centers"
+                                        placeholder="AI,Semiconductors,Data Centers"
+                                    />
+                                    <p class="mt-1 text-xs text-gray-500">Comma-separated list of sectors to focus on</p>
+                                </div>
+                                
+                                <div>
+                                    <label for="max_stocks" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Maximum Stocks in Portfolio
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="max_stocks"
+                                        id="max_stocks"
+                                        min="5"
+                                        max="20"
+                                        class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                        value="10"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Update Preferences</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="update_frequency" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Update Frequency
+                                    </label>
+                                    <select
+                                        id="update_frequency"
+                                        name="update_frequency"
+                                        class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                                    >
+                                        <option value="weekly">Weekly</option>
+                                        <option value="biweekly">Bi-weekly</option>
+                                        <option value="monthly" selected>Monthly</option>
+                                        <option value="quarterly">Quarterly</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <input
+                                        id="auto_update"
+                                        name="auto_update"
+                                        type="checkbox"
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                        checked
+                                    />
+                                    <label for="auto_update" class="ml-2 block text-sm text-gray-900">
+                                        Enable automatic updates
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <input
+                                        id="notifications_enabled"
+                                        name="notifications_enabled"
+                                        type="checkbox"
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                        checked
+                                    />
+                                    <label for="notifications_enabled" class="ml-2 block text-sm text-gray-900">
+                                        Enable email notifications
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-5">
+                            <div class="flex justify-end">
+                                <button
+                                    type="button"
+                                    class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    id="resetSettingsBtn"
+                                >
+                                    Reset to Defaults
+                                </button>
+                                <button
+                                    type="submit"
+                                    class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    Save Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <div id="rationale-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Investment Rationale</h3>
+            <p id="rationale-text" class="text-sm text-gray-600"></p>
+            <div class="mt-5 flex justify-end">
+                <button type="button" class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="closeRationaleBtn">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="update-modal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg max-w-md w-full p-6">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <h3 class="text-lg font-medium text-gray-900">Updating Recommendations</h3>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Our AI algorithm is analyzing market data and updating your stock recommendations. This may take a moment...</p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                <div class="bg-indigo-600 h-2.5 rounded-full" id="update-progress" style="width: 0%"></div>
+            </div>
+            <p class="text-xs text-gray-500" id="update-status">Initializing analysis...</p>
+        </div>
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
